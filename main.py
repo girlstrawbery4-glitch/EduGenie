@@ -12,7 +12,7 @@ def ask_ai(prompt: str):
         res = model.generate_content(prompt)
         return res.text
     except Exception as e:
-        return f"Server busy da, 30 sec kalichu try pannu! <br><small>{e}</small>"
+        return f"Error: {str(e)} Please wait 30 seconds and try again."
 
 app = FastAPI()
 
@@ -20,72 +20,38 @@ HTML_PAGE = """
 <!DOCTYPE html>
 <html>
 <head>
+<title>EduGenie - AI Study Buddy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body{{background:#f0f2f9; font-family: sans-serif; padding:15px}}
-.card{{background:white; border-radius:20px; padding:20px; margin-bottom:20px; box-shadow:0 4px 12px #0001}}
-h1{{color:#5a23e8; text-align:center; font-size:32px}}
-p.sub{{text-align:center; font-size:18px; margin-top:-10px}}
-h2{{font-size:20px}}
-input, textarea{{width:95%; padding:15px; border-radius:12px; border:1px solid #ccc; font-size:16px}}
-button{{background:#2a7bff; color:white; border:none; padding:12px 22px; border-radius:12px; font-size:16px; font-weight:bold; margin-top:12px}}
-.ans{{background:#f5f5f7; border-left:5px solid #2a7bff; border-radius:12px; padding:15px; margin-top:15px; white-space:pre-wrap}}
+body { font-family: Arial, sans-serif; background: #f0f4ff; padding: 20px; }
+.card { background: white; max-width: 650px; margin: auto; padding: 25px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+h1 { text-align: center; color: #4F46E5; margin-bottom: 5px; }
+p.sub { text-align:center; color: #666; margin-top: 0; }
+input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #ccc; margin-top: 15px; box-sizing: border-box; }
+button { width: 100%; padding: 12px; background: #4F46E5; color: white; border: none; border-radius: 8px; margin-top: 12px; font-size: 16px; cursor: pointer; }
+.answer { margin-top: 20px; background: #EEF2FF; padding: 15px; border-radius: 8px; white-space: pre-wrap; border-left: 4px solid #4F46E5; }
 </style>
 </head>
 <body>
-<div class="card"><h1>EduGenie 🧠 ✨</h1><p class="sub">Your Personal AI Learning Assistant</p></div>
-
 <div class="card">
-<h2>a. Asking questions:</h2>
-<form method="post" action="/ask">
-<input name="q" placeholder="What is ai" required>
-<button>Get Answer</button>
+<h1>EduGenie 🧠✨</h1>
+<p class="sub">Your AI Study Buddy</p>
+<form method="post">
+<input type="text" name="question" placeholder="Ask anything... What is AI?" required>
+<button type="submit">Get Answer</button>
 </form>
-{ans1}
-</div>
-
-<div class="card">
-<h2>b. Explanation of any topic:</h2>
-<form method="post" action="/explain">
-<input name="topic" placeholder="Ex: Photosynthesis" required>
-<button>Explain</button>
-</form>
-{ans2}
-</div>
-
-<div class="card">
-<h2>c. Summarising long paragraphs:</h2>
-<form method="post" action="/summarise">
-<textarea name="para" rows="4" placeholder="Paste long paragraph here..." required></textarea>
-<button>Summarise</button>
-</form>
-{ans3}
+{result}
 </div>
 </body>
 </html>
 """
 
-def render(a1="", a2="", a3=""):
-    return HTML_PAGE.format(
-        ans1=f'<div class="ans">{a1}</div>' if a1 else "",
-        ans2=f'<div class="ans">{a2}</div>' if a2 else "",
-        ans3=f'<div class="ans">{a3}</div>' if a3 else ""
-    )
-
 @app.get("/", response_class=HTMLResponse)
-def home(): return render()
+def home():
+    return HTML_PAGE.format(result="")
 
-@app.post("/ask", response_class=HTMLResponse)
-def ask(q: str = Form(...)):
-    ans = ask_ai(q)
-    return render(a1=ans)
-
-@app.post("/explain", response_class=HTMLResponse)
-def explain(topic: str = Form(...)):
-    ans = ask_ai(f"Explain {topic} in simple way with Tamil + English points")
-    return render(a2=ans)
-
-@app.post("/summarise", response_class=HTMLResponse)
-def summarise(para: str = Form(...)):
-    ans = ask_ai(f"Summarise this in 5 points: {para}")
-    return render(a3=ans)
+@app.post("/", response_class=HTMLResponse)
+def ask(question: str = Form(...)):
+    ans = ask_ai(question)
+    result_html = f'<div class="answer"><b>Answer:</b><br>{ans}</div>'
+    return HTML_PAGE.format(result=result_html)
