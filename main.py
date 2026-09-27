@@ -6,8 +6,7 @@ import os
 from google import genai
 
 
-GEMINI_API_KEY = "YOUR_API_KEY"
-client = genai.Client(api_key=GEMINI_API_KEY)
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 app = FastAPI()
 
 
