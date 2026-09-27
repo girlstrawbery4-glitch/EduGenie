@@ -1,0 +1,14 @@
+
+<!DOCTYPE html><html><head><title>EduGenie</title><link rel='stylesheet' href='/static/style.css'></head>
+<body><div class='container'><h1>EduGenie 🧠✨ LIVE with Gemini!</h1>
+<div class='card'><h3>Explain Concept</h3><input id='topic' placeholder='Ex: Photosynthesis'><button onclick="callAPI('explain')">Explain</button><p id='explain-res'></p></div>
+<div class='card'><h3>Ask Question</h3><input id='qna' placeholder='Your question'><button onclick="callAPI('qna')">Get Answer</button><p id='qna-res'></p></div>
+<div class='card'><h3>Generate Quiz</h3><input id='quiz' placeholder='Topic'><button onclick="callAPI('quiz')">Quiz</button><p id='quiz-res'></p></div>
+</div><script>
+async function callAPI(type){
+ let val=document.getElementById(type=='explain'?'topic':type=='qna'?'qna':'quiz').value;
+ let url=`/${type}?`+(type=='explain'?`topic=${val}`:type=='qna'?`question=${val}`:`topic=${val}`);
+ let res=await fetch(url); let data=await res.json();
+ document.getElementById(type+'-res').innerText=JSON.stringify(data,null,2);
+}
+</script></body></html>
