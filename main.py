@@ -8,7 +8,7 @@ genai.configure(api_key=api_key)
 
 def ask_ai(prompt: str):
     try:
-        model = genai.GenerativeModel("gemini-3.8-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash")
         res = model.generate_content(prompt)
         return res.text
     except Exception as e:
