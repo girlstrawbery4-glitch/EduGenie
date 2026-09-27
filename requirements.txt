@@ -1,5 +1,4 @@
 fastapi
 uvicorn
-jinja2
-python-multipart
 google-generativeai
+python-multipart
