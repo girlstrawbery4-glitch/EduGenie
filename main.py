@@ -38,7 +38,7 @@ HTML_PAGE = """
 <html>
 <head>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduGenie - Gemini 3.8 Flash</title>
+<title>EduGenie</title>
 <style>
 body{font-family:sans-serif;background:#f4f6fb;margin:0;padding:10px}
 .container{max-width:750px;margin:auto}
